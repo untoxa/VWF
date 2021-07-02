@@ -1,0 +1,1 @@
+@python .\utils\romusage.py .\rom.gb
