@@ -1,5 +1,6 @@
 GBDK = ../../../gbdk
-CC = $(GBDK)/bin/lcc -Wl-j -Wm-yS -tempdir=obj
+OBJ = obj
+CC = $(GBDK)/bin/lcc -Wl-j -Wm-yS -tempdir=$(OBJ)
 ASMINC = $(GBDK)/lib/small/asxxxx 
 
 CFLAGS = -Wa-I$(ASMINC)
@@ -22,13 +23,16 @@ SRC = $(foreach dir,src,$(wildcard $(dir)/*.c))
 ASRC = $(foreach dir,src,$(wildcard $(dir)/*.s)) 
 DRVOBJ = $(foreach dir,src,$(wildcard player/*.obj.o)) 
 
-all:	clean rom
+all:	clean prepare rom
 
 %.gb:
 	$(CC) $(CFLAGS) -o $@ $(SRC) $(ASRC) $(DRVOBJ)
 
 clean:
 	rm -rf $(patsubst %.gb,%.*,$(TARGET))
+
+prepare:
+	mkdir -p $(OBJ)
 
 rom: $(TARGET)
 	@echo "DONE!"
