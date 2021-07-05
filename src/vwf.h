@@ -22,8 +22,14 @@ typedef struct font_desc_t {
     const UBYTE * bitmaps;
 } font_desc_t;
 
+typedef enum { 
+    VWF_RENDER_BKG, 
+    VWF_RENDER_WIN 
+} vwf_reder_dest_e;
+
 extern vwf_farptr_t vwf_fonts[4];
 
+void vwf_set_destination(vwf_reder_dest_e destination);
 void vwf_load_font(UBYTE idx, const void * font, UBYTE bank);
 void vwf_activate_font(UBYTE idx);
 void vwf_draw_text(UBYTE x, UBYTE y, UBYTE base_tile, const unsigned char * str);

@@ -13,6 +13,8 @@ UBYTE vwf_inverse_map;
 UBYTE vwf_current_tile;
 UBYTE vwf_text_bkg_fill = 0;
 
+UBYTE * vwf_render_base_address = 0x9800;
+
 font_desc_t vwf_current_font_desc;
 UBYTE vwf_current_font_bank;
 
@@ -23,6 +25,10 @@ UBYTE * vwf_get_win_addr() __preserves_regs(b, c, h, l);
 UBYTE * vwf_get_bkg_addr() __preserves_regs(b, c, h, l);
 void vwf_set_banked_bkg_data(UBYTE i, UBYTE l, const unsigned char* ptr, UBYTE bank);
 void vwf_set_banked_win_data(UBYTE i, UBYTE l, const unsigned char* ptr, UBYTE bank);
+
+void vwf_set_destination(vwf_reder_dest_e destination) {
+    vwf_render_base_address = (destination == VWF_RENDER_BKG) ? vwf_get_bkg_addr() : vwf_get_win_addr();
+}
 
 void vwf_print_reset(UBYTE tile) {
     vwf_current_tile = tile;
@@ -68,7 +74,7 @@ UBYTE vwf_print_render(const unsigned char ch) {
 void vwf_draw_text(UBYTE x, UBYTE y, UBYTE base_tile, const unsigned char * str) {
     static UBYTE * ui_dest_base, *ui_dest_ptr;
     static const UBYTE * ui_text_ptr;
-    ui_dest_ptr = ui_dest_base = vwf_get_bkg_addr() + y * 32 + x;
+    ui_dest_ptr = ui_dest_base = vwf_render_base_address + y * 32 + x;
     ui_text_ptr = str;
 
     vwf_print_reset(base_tile);
@@ -78,7 +84,7 @@ void vwf_draw_text(UBYTE x, UBYTE y, UBYTE base_tile, const unsigned char * str)
                 vwf_activate_font(*++ui_text_ptr);
                 break;
             case 0x02:
-                ui_dest_ptr = ui_dest_base = vwf_get_bkg_addr() + *++ui_text_ptr * 32 + *++ui_text_ptr;
+                ui_dest_ptr = ui_dest_base = vwf_render_base_address + *++ui_text_ptr * 32 + *++ui_text_ptr;
                 if (vwf_current_offset) vwf_print_reset(vwf_current_tile + 1u);
                 break; 
             case 0x03:
