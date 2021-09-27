@@ -30,12 +30,12 @@ uint8_t * vwf_get_win_addr() OLDCALL __preserves_regs(b, c, h, l) ;
 uint8_t * vwf_get_bkg_addr() OLDCALL __preserves_regs(b, c, h, l) ;
 void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) OLDCALL;
 #elif defined(SEGA)
-void vwf_print_shift_char(void * dest, const void * src, uint8_t bank);
+void vwf_print_shift_char(void * dest, const void * src, uint8_t bank) __z88dk_callee;
 void vwf_memcpy(void* to, const void* from, size_t n, uint8_t bank) __z88dk_callee;
 uint8_t vwf_read_banked_ubyte(const void * src, uint8_t bank) __z88dk_callee;
-uint8_t * vwf_get_win_addr() __preserves_regs(b, c, h, l);
-uint8_t * vwf_get_bkg_addr() __preserves_regs(b, c, h, l);
-void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank);
+uint8_t * vwf_get_win_addr() OLDCALL;
+uint8_t * vwf_get_bkg_addr() OLDCALL;
+void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) __z88dk_callee;
 #endif
 
 
@@ -86,7 +86,7 @@ uint8_t vwf_print_render(const unsigned char ch) {
 void vwf_draw_text(uint8_t x, uint8_t y, uint8_t base_tile, const unsigned char * str) {
     static uint8_t * ui_dest_base, *ui_dest_ptr;
     static const uint8_t * ui_text_ptr;
-    ui_dest_ptr = ui_dest_base = vwf_render_base_address + y * 32 + x;
+    ui_dest_ptr = ui_dest_base = vwf_render_base_address + (y + DEVICE_SCREEN_Y_OFFSET) * (DEVICE_SCREEN_BUFFER_WIDTH * DEVICE_SCREEN_MAP_ENTRY_SIZE) + ((x + DEVICE_SCREEN_X_OFFSET) * DEVICE_SCREEN_MAP_ENTRY_SIZE);
     ui_text_ptr = str;
 
     vwf_print_reset(base_tile);
@@ -96,19 +96,20 @@ void vwf_draw_text(uint8_t x, uint8_t y, uint8_t base_tile, const unsigned char 
                 vwf_activate_font(*++ui_text_ptr);
                 break;
             case 0x02:
-                ui_dest_ptr = ui_dest_base = vwf_render_base_address + *++ui_text_ptr * 32 + *++ui_text_ptr;
+                ui_dest_ptr = ui_dest_base = vwf_render_base_address + (*++ui_text_ptr + DEVICE_SCREEN_Y_OFFSET) * (DEVICE_SCREEN_BUFFER_WIDTH * DEVICE_SCREEN_MAP_ENTRY_SIZE) + ((*++ui_text_ptr + DEVICE_SCREEN_X_OFFSET) * DEVICE_SCREEN_MAP_ENTRY_SIZE);
                 if (vwf_current_offset) vwf_print_reset(vwf_current_tile + 1u);
                 break; 
             case 0x03:
                 vwf_inverse_map = *++ui_text_ptr;
                 break;
             case '\n':
-                ui_dest_ptr = ui_dest_base += 32;
+                ui_dest_ptr = ui_dest_base += (DEVICE_SCREEN_BUFFER_WIDTH * DEVICE_SCREEN_MAP_ENTRY_SIZE);
                 if (vwf_current_offset) vwf_print_reset(vwf_current_tile + 1u);
                 break; 
             default:
                 if (vwf_print_render(*ui_text_ptr)) {
-                    set_vram_byte(ui_dest_ptr++, vwf_current_tile - 1);
+                    set_vram_byte(ui_dest_ptr, vwf_current_tile - 1);
+                    ui_dest_ptr += DEVICE_SCREEN_MAP_ENTRY_SIZE;
                 }
                 if (vwf_current_offset) set_vram_byte(ui_dest_ptr, vwf_current_tile);
                 break;
