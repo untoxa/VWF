@@ -1,12 +1,15 @@
-#include <gb/gb.h>
+#include <gbdk/platform.h>
+
 #include "vwf.h"
 #include "vwf_font.h"
 #include "vwf_font_bold.h"
 #include "vwf_font_ru.h"
 
 void main() {
-    fill_bkg_rect(0, 0, 20, 18, 0x00u);
-    fill_win_rect(0, 0, 20, 18, 0x00u);
+    fill_bkg_rect(0, 0, DEVICE_SCREEN_WIDTH, DEVICE_SCREEN_HEIGHT, 0x00u);
+#if defined(NINTENDO)
+    fill_win_rect(0, 0, DEVICE_SCREEN_WIDTH, DEVICE_SCREEN_HEIGHT, 0x00u);
+#endif
     SHOW_BKG;
 
     vwf_set_destination(VWF_RENDER_BKG);
@@ -33,12 +36,13 @@ void main() {
     vwf_set_destination(VWF_RENDER_WIN);
     vwf_draw_text(1, 0, vwf_next_tile(), "This text should be rendered\non the window layer.");
 
+#if defined(NINTENDO)
     WX_REG = 7u; WY_REG = 144;
     SHOW_WIN; 
     for (uint8_t i = 143; i != 103; i--) {
         WY_REG = i;
         wait_vbl_done();
     }
-
+#endif
 }
 
