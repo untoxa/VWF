@@ -12,6 +12,9 @@
 #define RECODE_7BIT 1
 #define FONT_VWF 2
 
+#define VWF_MODE_RENDER 0
+#define VWF_MODE_PRINT 1
+
 typedef struct vwf_farptr_t {
     UINT8 bank;
     void * ptr;
@@ -30,11 +33,16 @@ typedef enum {
 } vwf_reder_dest_e;
 
 extern vwf_farptr_t vwf_fonts[4];
+extern uint8_t vwf_mode;
 
 void vwf_set_destination(vwf_reder_dest_e destination);
 void vwf_load_font(uint8_t idx, const void * font, uint8_t bank);
 void vwf_activate_font(uint8_t idx);
-void vwf_draw_text(uint8_t x, uint8_t y, uint8_t base_tile, const unsigned char * str);
+uint8_t vwf_draw_text(uint8_t x, uint8_t y, uint8_t base_tile, const unsigned char * str);
 uint8_t vwf_next_tile();
+
+inline void vwf_set_mode(uint8_t mode) {
+   vwf_mode = mode; 
+}
 
 #endif

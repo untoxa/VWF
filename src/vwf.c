@@ -16,6 +16,7 @@ uint8_t vwf_current_mask;
 uint8_t vwf_current_rotate;
 uint8_t vwf_inverse_map = 0;
 uint8_t vwf_current_tile;
+uint8_t vwf_mode = VWF_MODE_PRINT;
 
 uint8_t * vwf_render_base_address = VWF_DEFAULT_BASE_ADDRESS;
 
@@ -83,7 +84,7 @@ uint8_t vwf_print_render(const unsigned char ch) {
     }
 }
 
-void vwf_draw_text(uint8_t x, uint8_t y, uint8_t base_tile, const unsigned char * str) {
+uint8_t vwf_draw_text(uint8_t x, uint8_t y, uint8_t base_tile, const unsigned char * str) {
     static uint8_t * ui_dest_base, *ui_dest_ptr;
     static const uint8_t * ui_text_ptr;
     ui_dest_ptr = ui_dest_base = vwf_render_base_address + (y + DEVICE_SCREEN_Y_OFFSET) * (DEVICE_SCREEN_BUFFER_WIDTH * DEVICE_SCREEN_MAP_ENTRY_SIZE) + ((x + DEVICE_SCREEN_X_OFFSET) * DEVICE_SCREEN_MAP_ENTRY_SIZE);
@@ -108,14 +109,15 @@ void vwf_draw_text(uint8_t x, uint8_t y, uint8_t base_tile, const unsigned char 
                 break; 
             default:
                 if (vwf_print_render(*ui_text_ptr)) {
-                    set_vram_byte(ui_dest_ptr, vwf_current_tile - 1);
+                    if (vwf_mode & VWF_MODE_PRINT) set_vram_byte(ui_dest_ptr, vwf_current_tile - 1);
                     ui_dest_ptr += DEVICE_SCREEN_MAP_ENTRY_SIZE;
                 }
-                if (vwf_current_offset) set_vram_byte(ui_dest_ptr, vwf_current_tile);
+                if ((vwf_current_offset) && (vwf_mode & VWF_MODE_PRINT)) set_vram_byte(ui_dest_ptr, vwf_current_tile);
                 break;
         }
         ui_text_ptr++;
     }
+    return vwf_next_tile() - base_tile;
 }
 
 void vwf_load_font(uint8_t idx, const void * font, uint8_t bank) {
