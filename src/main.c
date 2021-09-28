@@ -20,6 +20,7 @@ void main() {
     vwf_activate_font(2);
 
 //    vwf_set_mode(VWF_MODE_RENDER);
+//    vwf_set_colors(2, 1);
     vwf_draw_text(3, 3, 1, "Hello, world!\n\x01\x01\BOLD\x01\x00\n\x03\xffthis is a \x01\x01test\x01\x00\x03\x00\nof the new line\ncontrol symbol");
     vwf_draw_text(8, 9, vwf_next_tile(), "This is another\ntext block that is\nprinted in the other\nplace on screen");
     vwf_draw_text(12, 1, vwf_next_tile(), "The third\ntext block\nto the right\nof the first\none");

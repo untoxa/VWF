@@ -89,23 +89,15 @@ _vwf_print_shift_char::
         ld l, (hl)
         ld h, a 
 
-        ld a, #8
+        ld b, #8
 3$:
-        push af
-
         ld a, (de)
         ld c, a
         ld a, (_vwf_inverse_map)
         xor c
         ld c, a
-                
-        ld a, (de)
-        ld b, a
-        ld a, (_vwf_inverse_map)
-        xor b
-        ld b, a
         inc de
-
+                
         ld a, (_vwf_current_rotate)
         sla a
         jr z, 1$
@@ -114,15 +106,12 @@ _vwf_print_shift_char::
         srl a
         jr nc, 6$
         srl c
-        srl b
 6$:
         or a
         jr z, 1$
 2$:
         srl c
-        srl b
         srl c
-        srl b
         dec a
         jr nz, 2$
         jr 1$
@@ -131,14 +120,11 @@ _vwf_print_shift_char::
         srl a
         jr nc, 7$
         sla c
-        sla b
 7$:     or a
         jr z, 1$
 5$:
         sla c
-        sla b
         sla c
-        sla b
         dec a
         jr nz, 5$
 1$:
@@ -147,13 +133,7 @@ _vwf_print_shift_char::
         or c
         ld (hl+), a
 
-        ld a, (_vwf_current_mask)
-        and (hl)
-        or b
-        ld (hl+), a
-
-        pop af
-        dec a
+        dec b
         jr nz, 3$
 
         pop af

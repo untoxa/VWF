@@ -1,16 +1,15 @@
 #include "vwf.h"
 
 #if defined(NINTENDO)
-#define DEVICE_TILE_SIZE 16u
 #define VWF_DEFAULT_BASE_ADDRESS 0x9800
 #elif defined(SEGA)
-#define DEVICE_TILE_SIZE 32u
 #define VWF_DEFAULT_BASE_ADDRESS 0x7800
 #endif
+#define DEVICE_TILE_SIZE 8u
 
 vwf_farptr_t vwf_fonts[4];
 
-static uint8_t vwf_current_offset;
+static uint8_t vwf_current_offset = 0;
 static uint8_t vwf_tile_data[DEVICE_TILE_SIZE * 2];
 uint8_t vwf_current_mask;
 uint8_t vwf_current_rotate;
@@ -67,13 +66,13 @@ uint8_t vwf_print_render(const unsigned char ch) {
         }
         vwf_current_offset += width;
 
-        set_native_tile_data(vwf_current_tile, 1, vwf_tile_data);
+        set_bkg_1bpp_data(vwf_current_tile, 1, vwf_tile_data);
         if (vwf_current_offset > 7u) {
             memcpy(vwf_tile_data, vwf_tile_data + DEVICE_TILE_SIZE, DEVICE_TILE_SIZE);
             memset(vwf_tile_data + DEVICE_TILE_SIZE, vwf_inverse_map, DEVICE_TILE_SIZE);
             vwf_current_offset -= 8u;
             vwf_current_tile++;
-            if (vwf_current_offset) set_native_tile_data(vwf_current_tile, 1, vwf_tile_data);
+            if (vwf_current_offset) set_bkg_1bpp_data(vwf_current_tile, 1, vwf_tile_data);
             return TRUE;
         } 
         return FALSE;

@@ -44,5 +44,8 @@ uint8_t vwf_next_tile();
 inline void vwf_set_mode(uint8_t mode) {
    vwf_mode = mode; 
 }
+inline void vwf_set_colors(uint8_t fgcolor, uint8_t bgcolor) {
+    set_1bpp_colors(fgcolor, bgcolor);
+}
 
 #endif
