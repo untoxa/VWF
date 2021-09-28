@@ -7,9 +7,6 @@
 
 void main() {
     fill_bkg_rect(0, 0, DEVICE_SCREEN_WIDTH, DEVICE_SCREEN_HEIGHT, 0x00u);
-#if defined(NINTENDO)
-    fill_win_rect(0, 0, DEVICE_SCREEN_WIDTH, DEVICE_SCREEN_HEIGHT, 0x00u);
-#endif
     SHOW_BKG;
 
     vwf_set_destination(VWF_RENDER_BKG);
@@ -26,6 +23,8 @@ void main() {
     vwf_draw_text(12, 1, vwf_next_tile(), "The third\ntext block\nto the right\nof the first\none");
 
 #if defined(NINTENDO)
+    fill_win_rect(0, 0, DEVICE_SCREEN_WIDTH, DEVICE_SCREEN_HEIGHT, 0x00u);
+
     vwf_set_destination(VWF_RENDER_WIN);
     vwf_draw_text(1, 0, vwf_next_tile(), "This text should be rendered\non the window layer.");
 

@@ -68,14 +68,14 @@ uint8_t vwf_print_render(const unsigned char ch) {
         }
         vwf_current_offset += width;
 
-        set_bkg_1bpp_data(vwf_current_tile, 1, vwf_tile_data);
         if (vwf_current_offset > 7u) {
-            vwf_swap_tiles();
             vwf_current_offset -= 8u;
+            set_bkg_1bpp_data(vwf_current_tile, (vwf_current_offset) ? 2 : 1, vwf_tile_data);
             vwf_current_tile++;
-            if (vwf_current_offset) set_bkg_1bpp_data(vwf_current_tile, 1, vwf_tile_data);
+            vwf_swap_tiles();
             return TRUE;
-        } 
+        };
+        set_bkg_1bpp_data(vwf_current_tile, 1, vwf_tile_data);
         return FALSE;
     } else {
         vwf_set_banked_data(vwf_current_tile++, 1, bitmap, vwf_current_font_bank);
