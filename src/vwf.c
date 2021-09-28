@@ -9,8 +9,8 @@
 
 vwf_farptr_t vwf_fonts[4];
 
-static uint8_t vwf_current_offset = 0;
-static uint8_t vwf_tile_data[DEVICE_TILE_SIZE * 2];
+uint8_t vwf_current_offset = 0;
+uint8_t vwf_tile_data[DEVICE_TILE_SIZE * 2];
 uint8_t vwf_current_mask;
 uint8_t vwf_current_rotate;
 uint8_t vwf_inverse_map = 0;
@@ -29,6 +29,7 @@ uint8_t vwf_read_banked_ubyte(const void * src, uint8_t bank) OLDCALL __preserve
 uint8_t * vwf_get_win_addr() OLDCALL __preserves_regs(b, c, h, l) ;
 uint8_t * vwf_get_bkg_addr() OLDCALL __preserves_regs(b, c, h, l) ;
 void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) OLDCALL;
+void vwf_swap_tiles() OLDCALL;
 #elif defined(SEGA)
 void vwf_print_shift_char(void * dest, const void * src, uint8_t bank) __z88dk_callee;
 void vwf_memcpy(void* to, const void* from, size_t n, uint8_t bank) __z88dk_callee;
@@ -36,8 +37,8 @@ uint8_t vwf_read_banked_ubyte(const void * src, uint8_t bank) __z88dk_callee;
 uint8_t * vwf_get_win_addr() OLDCALL;
 uint8_t * vwf_get_bkg_addr() OLDCALL;
 void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) __z88dk_callee;
+void vwf_swap_tiles() OLDCALL;
 #endif
-
 
 void vwf_set_destination(vwf_reder_dest_e destination) {
     vwf_render_base_address = (destination == VWF_RENDER_BKG) ? vwf_get_bkg_addr() : vwf_get_win_addr();
@@ -46,7 +47,8 @@ void vwf_set_destination(vwf_reder_dest_e destination) {
 void vwf_print_reset(uint8_t tile) {
     vwf_current_tile = tile;
     vwf_current_offset = 0;
-    memset(vwf_tile_data, vwf_inverse_map, sizeof(vwf_tile_data));
+    vwf_swap_tiles(); 
+    vwf_swap_tiles(); 
 }
 
 uint8_t vwf_print_render(const unsigned char ch) {
@@ -68,8 +70,7 @@ uint8_t vwf_print_render(const unsigned char ch) {
 
         set_bkg_1bpp_data(vwf_current_tile, 1, vwf_tile_data);
         if (vwf_current_offset > 7u) {
-            memcpy(vwf_tile_data, vwf_tile_data + DEVICE_TILE_SIZE, DEVICE_TILE_SIZE);
-            memset(vwf_tile_data + DEVICE_TILE_SIZE, vwf_inverse_map, DEVICE_TILE_SIZE);
+            vwf_swap_tiles();
             vwf_current_offset -= 8u;
             vwf_current_tile++;
             if (vwf_current_offset) set_bkg_1bpp_data(vwf_current_tile, 1, vwf_tile_data);

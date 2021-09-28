@@ -4,7 +4,6 @@
 #include <gbdk/platform.h>
 
 #include <stdint.h>
-#include <string.h>
 
 #define __VWF_BANK_PREFIX(A) __bank_##A
 #define TO_VWF_FARPTR(A) {.bank = (char)&(__VWF_BANK_PREFIX(A)), .ptr = (void *)&(A)}

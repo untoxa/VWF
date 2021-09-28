@@ -1,7 +1,6 @@
         .include        "global.s"
 
-        .globl _vwf_current_rotate, _vwf_current_mask, _vwf_inverse_map
-        .globl _memcpy
+        .globl _vwf_current_rotate, _vwf_current_mask, _vwf_inverse_map, _vwf_tile_data, _vwf_inverse_map
         .globl _set_bkg_1bpp_data
 
         .area _DATA
@@ -17,19 +16,39 @@ _vwf_memcpy::
         ld  (#__save),a
 
         ldhl sp, #8
-        ld  a, (hl)
+        ld  a, (hl-)
         ldh (__current_bank),a
         ld  (#0x2000), a
 
-        pop bc
-        call _memcpy
+        ld a, (hl-)
+        ld b, a
+        ld a, (hl-)
+        ld c, a
+        ld a, (hl-)
+        ld d, a
+        ld a, (hl-)
+        ld e, a
+        ld a, (hl-)
+        ld l, (hl)
+        ld h, a
+
+        inc b
+        inc c
+        jr 2$
+1$:
+        ld a, (de)
+        ld (hl+), a
+        inc de
+2$:
+        dec c
+        jr nz, 1$
+        dec b
+        jr nz, 1$
 
         ld  a, (#__save)
         ldh (__current_bank),a
         ld  (#0x2000), a
-        ld  h, b
-        ld  l, c
-        jp  (hl)
+        ret
 
 ; UBYTE vwf_read_banked_ubyte(const void * src, UBYTE bank) __preserves_regs(b, c); 
 _vwf_read_banked_ubyte::
@@ -159,4 +178,19 @@ _vwf_get_bkg_addr::
         ret
 .is9c:
         ld      de,#0x9C00      ; DE = origin
+        ret
+
+_vwf_swap_tiles::
+        ld      hl, #_vwf_tile_data
+        ld      de, #(_vwf_tile_data + 8)
+        .rept 8
+                ld      a, (de)
+                inc     de
+                ld      (hl+), a
+        .endm
+        ld      a, (_vwf_inverse_map)
+        .rept 7
+        ld      (hl+), a
+        .endm
+        ld      (hl), a
         ret

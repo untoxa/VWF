@@ -1,7 +1,6 @@
         .include        "global.s"
 
-        .globl _vwf_current_rotate, _vwf_current_mask, _vwf_inverse_map
-        .globl _memcpy
+        .globl _vwf_current_rotate, _vwf_current_mask, _vwf_inverse_map, _vwf_tile_data, _vwf_inverse_map
         .globl _set_tile_1bpp_data, __current_1bpp_colors
 
         .ez80
@@ -156,4 +155,20 @@ _vwf_print_shift_char::
 _vwf_get_win_addr::
 _vwf_get_bkg_addr::
         ld hl, #.VDP_TILEMAP
+        ret
+
+_vwf_swap_tiles::
+        ld      de, #_vwf_tile_data
+        ld      hl, #(_vwf_tile_data + 8)
+        .rept 8
+                ldi
+        .endm
+        ld      a, (_vwf_inverse_map)
+        ld      (de), a
+        ld      h, d
+        ld      l, e
+        inc     de
+        .rept 7
+                ldi
+        .endm
         ret
