@@ -12,7 +12,7 @@ __save:
 
         .area _CODE
 
-; void vwf_memcpy(void* to, const void* from, size_t n, UBYTE bank)  __z88dk_callee;
+; void vwf_memcpy(void* to, const void* from, size_t n, UBYTE bank) Z88DK_CALLEE;
 _vwf_memcpy::
         pop iy
         pop de
@@ -32,7 +32,7 @@ _vwf_memcpy::
         ld  (.MAP_FRAME1),a
         ret
 
-; UBYTE vwf_read_banked_ubyte(const void * src, UBYTE bank) __z88dk_callee; 
+; UBYTE vwf_read_banked_ubyte(const void * src, UBYTE bank) Z88DK_CALLEE; 
 _vwf_read_banked_ubyte::
         ld  a, (.MAP_FRAME1)
         ld  (#__save), a
@@ -52,7 +52,7 @@ _vwf_read_banked_ubyte::
         ld (.MAP_FRAME1), a
         ret
 
-; void vwf_set_banked_bkg_data(UBYTE i, UBYTE l, const unsigned char* ptr, UBYTE bank)  __z88dk_callee;
+; void vwf_set_banked_bkg_data(UBYTE i, UBYTE l, const unsigned char* ptr, UBYTE bank) Z88DK_CALLEE;
 _vwf_set_banked_data::
         ld  a, (.MAP_FRAME1)
         ld  (#__save), a
@@ -81,7 +81,7 @@ _vwf_set_banked_data::
         ld (.MAP_FRAME1), a
         ret
 
-; void vwf_print_shift_char(void * dest, const void * src, UBYTE bank);
+; void vwf_print_shift_char(void * dest, const void * src, UBYTE bank) Z88DK_CALLEE;
 _vwf_print_shift_char::
         ld  a, (.MAP_FRAME1)
         ld  (#__save), a

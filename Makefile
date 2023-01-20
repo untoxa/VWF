@@ -2,14 +2,14 @@ SHELL := /bin/bash
 
 # If you move this project you can change the directory
 # to match your GBDK root directory (ex: GBDK_HOME = "C:/GBDK/"
-GBDK_HOME = ../../../gbdk/
+GBDK_HOME = ../../../gbdk-2020/build/gbdk/
 LCC = $(GBDK_HOME)bin/lcc
 
 # Set platforms to build here, spaced separated. (These are in the separate Makefile.targets)
 # They can also be built/cleaned individually: "make gg" and "make gg-clean"
 # Possible are: gb gbc pocket sms gg
-#TARGETS=gb pocket sms gg
-TARGETS=gb gg sms
+TARGETS=gb pocket sms gg
+#TARGETS=gb gg sms
 
 # Configure platform specific LCC flags here:
 LCCFLAGS_gb      = -Wl-yt0x19 -Wl-yo4 -Wm-yS -Wm-yn"$(PROJECTNAME)"

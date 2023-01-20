@@ -4,4 +4,4 @@
 *.sym
 *.ihx
 *.noi
-/*.cdb
+*.cdb

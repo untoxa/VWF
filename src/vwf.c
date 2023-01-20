@@ -31,12 +31,12 @@ uint8_t * vwf_get_bkg_addr() OLDCALL __preserves_regs(b, c, h, l) ;
 void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) OLDCALL;
 void vwf_swap_tiles() OLDCALL;
 #elif defined(SEGA)
-void vwf_print_shift_char(void * dest, const void * src, uint8_t bank) __z88dk_callee;
-void vwf_memcpy(void* to, const void* from, size_t n, uint8_t bank) __z88dk_callee;
-uint8_t vwf_read_banked_ubyte(const void * src, uint8_t bank) __z88dk_callee;
+void vwf_print_shift_char(void * dest, const void * src, uint8_t bank) Z88DK_CALLEE;
+void vwf_memcpy(void* to, const void* from, size_t n, uint8_t bank) Z88DK_CALLEE;
+uint8_t vwf_read_banked_ubyte(const void * src, uint8_t bank) Z88DK_CALLEE;
 uint8_t * vwf_get_win_addr() OLDCALL;
 uint8_t * vwf_get_bkg_addr() OLDCALL;
-void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) __z88dk_callee;
+void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) Z88DK_CALLEE;
 void vwf_swap_tiles() OLDCALL;
 #endif
 
