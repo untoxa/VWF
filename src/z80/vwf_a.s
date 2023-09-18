@@ -10,6 +10,11 @@
 __save: 
         .ds 0x01 
 
+        .area _GSINIT
+
+        call _vwf_get_bkg_addr
+        ld (_vwf_render_base_address), hl
+
         .area _CODE
 
 ; void vwf_memcpy(void* to, const void* from, size_t n, UBYTE bank) Z88DK_CALLEE;
@@ -154,7 +159,12 @@ _vwf_print_shift_char::
 
 _vwf_get_win_addr::
 _vwf_get_bkg_addr::
-        ld hl, #.VDP_TILEMAP
+        ld a, (_shadow_VDP_R2)
+        rlca
+        rlca
+        and #0b01111000
+        ld h, a
+        ld l, #0
         ret
 
 _vwf_swap_tiles::

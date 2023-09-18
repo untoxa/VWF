@@ -1,10 +1,5 @@
 #include "vwf.h"
 
-#if defined(NINTENDO)
-#define VWF_DEFAULT_BASE_ADDRESS 0x9800
-#elif defined(SEGA)
-#define VWF_DEFAULT_BASE_ADDRESS 0x7800
-#endif
 #define DEVICE_TILE_SIZE 8u
 
 vwf_farptr_t vwf_fonts[4];
@@ -17,8 +12,7 @@ uint8_t vwf_inverse_map = 0;
 uint8_t vwf_current_tile;
 uint8_t vwf_mode = VWF_MODE_PRINT;
 
-uint8_t * vwf_render_base_address = VWF_DEFAULT_BASE_ADDRESS;
-
+uint8_t * vwf_render_base_address;
 font_desc_t vwf_current_font_desc;
 uint8_t vwf_current_font_bank;
 
@@ -26,18 +20,18 @@ uint8_t vwf_current_font_bank;
 void vwf_print_shift_char(void * dest, const void * src, uint8_t bank) OLDCALL;
 void vwf_memcpy(void* to, const void* from, size_t n, uint8_t bank) OLDCALL;
 uint8_t vwf_read_banked_ubyte(const void * src, uint8_t bank) OLDCALL __preserves_regs(b, c) ;
-uint8_t * vwf_get_win_addr() OLDCALL __preserves_regs(b, c, h, l) ;
-uint8_t * vwf_get_bkg_addr() OLDCALL __preserves_regs(b, c, h, l) ;
+uint8_t * vwf_get_win_addr(void) OLDCALL __preserves_regs(b, c, h, l) ;
+uint8_t * vwf_get_bkg_addr(void) OLDCALL __preserves_regs(b, c, h, l) ;
 void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) OLDCALL;
-void vwf_swap_tiles() OLDCALL;
+void vwf_swap_tiles(void) OLDCALL;
 #elif defined(SEGA)
 void vwf_print_shift_char(void * dest, const void * src, uint8_t bank) Z88DK_CALLEE;
 void vwf_memcpy(void* to, const void* from, size_t n, uint8_t bank) Z88DK_CALLEE;
 uint8_t vwf_read_banked_ubyte(const void * src, uint8_t bank) Z88DK_CALLEE;
-uint8_t * vwf_get_win_addr() OLDCALL;
-uint8_t * vwf_get_bkg_addr() OLDCALL;
+uint8_t * vwf_get_win_addr(void) OLDCALL;
+uint8_t * vwf_get_bkg_addr(void) OLDCALL;
 void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) Z88DK_CALLEE;
-void vwf_swap_tiles() OLDCALL;
+void vwf_swap_tiles(void) OLDCALL;
 #endif
 
 void vwf_set_destination(vwf_reder_dest_e destination) {
@@ -131,6 +125,6 @@ void vwf_activate_font(uint8_t idx) {
     vwf_memcpy(&vwf_current_font_desc, vwf_fonts[idx].ptr, sizeof(font_desc_t), vwf_current_font_bank);    
 }
 
-uint8_t vwf_next_tile() {
+uint8_t vwf_next_tile(void) {
     return (vwf_current_offset) ? vwf_current_tile + 1u : vwf_current_tile;
 }

@@ -5,15 +5,15 @@
 #include "vwf_font_bold.h"
 #include "vwf_font_ru.h"
 
-void main() {
+void main(void) {
     fill_bkg_rect(0, 0, DEVICE_SCREEN_WIDTH, DEVICE_SCREEN_HEIGHT, 0x00u);
     SHOW_BKG;
 
     vwf_set_destination(VWF_RENDER_BKG);
 
-    vwf_load_font(0, vwf_font, (UBYTE)&__bank_vwf_font);
-    vwf_load_font(1, vwf_font_bold, (UBYTE)&__bank_vwf_font_bold);
-    vwf_load_font(2, font_ru, (UBYTE)&__bank_font_ru);
+    vwf_load_font(0, vwf_font, BANK(vwf_font));
+    vwf_load_font(1, vwf_font_bold, BANK(vwf_font_bold));
+    vwf_load_font(2, font_ru, BANK(font_ru));
     vwf_activate_font(2);
 
 //    vwf_set_mode(VWF_MODE_RENDER);

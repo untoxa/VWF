@@ -8,6 +8,14 @@
 __save: 
         .ds 0x01 
 
+        .area _GSINIT
+
+        call _vwf_get_bkg_addr
+        ld hl, #_vwf_render_base_address
+        ld (hl), e
+        inc hl
+        ld (hl), d
+
         .area _CODE
 
 ; void vwf_memcpy(void* to, const void* from, size_t n, UBYTE bank);

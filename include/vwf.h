@@ -38,7 +38,7 @@ void vwf_set_destination(vwf_reder_dest_e destination);
 void vwf_load_font(uint8_t idx, const void * font, uint8_t bank);
 void vwf_activate_font(uint8_t idx);
 uint8_t vwf_draw_text(uint8_t x, uint8_t y, uint8_t base_tile, const unsigned char * str);
-uint8_t vwf_next_tile();
+uint8_t vwf_next_tile(void);
 
 inline void vwf_set_mode(uint8_t mode) {
    vwf_mode = mode; 
