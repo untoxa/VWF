@@ -12,7 +12,13 @@ uint8_t vwf_inverse_map = 0;
 uint8_t vwf_current_tile;
 uint8_t vwf_mode = VWF_MODE_PRINT;
 
+#if defined(NINTENDO_NES)
+// GSINIT code is not used in gbdk-nes. Make sure this is allocated to _DATA instead of _BSS, and has an initial value.
+uint8_t * vwf_render_base_address = (uint8_t*)0x2000;
+#else
 uint8_t * vwf_render_base_address;
+#endif
+
 font_desc_t vwf_current_font_desc;
 uint8_t vwf_current_font_bank;
 
@@ -24,6 +30,14 @@ uint8_t * vwf_get_win_addr(void) OLDCALL __preserves_regs(b, c, h, l) ;
 uint8_t * vwf_get_bkg_addr(void) OLDCALL __preserves_regs(b, c, h, l) ;
 void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank) OLDCALL;
 void vwf_swap_tiles(void) OLDCALL;
+#elif defined(NINTENDO_NES)
+void vwf_print_shift_char(void * dest, const void * src, uint8_t bank);
+void vwf_memcpy(void* to, const void* from, size_t n, uint8_t bank);
+uint8_t vwf_read_banked_ubyte(const void * src, uint8_t bank);
+uint8_t * vwf_get_win_addr(void);
+uint8_t * vwf_get_bkg_addr(void);
+void vwf_set_banked_data(uint8_t i, uint8_t l, const unsigned char* ptr, uint8_t bank);
+void vwf_swap_tiles(void);
 #elif defined(SEGA)
 void vwf_print_shift_char(void * dest, const void * src, uint8_t bank) Z88DK_CALLEE;
 void vwf_memcpy(void* to, const void* from, size_t n, uint8_t bank) Z88DK_CALLEE;
