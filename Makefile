@@ -11,7 +11,7 @@ LCC = $(GBDK_HOME)bin/lcc
 # Set platforms to build here, spaced separated. (These are in the separate Makefile.targets)
 # They can also be built/cleaned individually: "make gg" and "make gg-clean"
 # Possible are: gb gbc pocket sms gg
-TARGETS=gb pocket sms gg
+TARGETS=gb pocket sms gg nes
 #TARGETS=gb gg sms
 
 # Configure platform specific LCC flags here:
@@ -19,15 +19,20 @@ LCCFLAGS_gb      = -Wl-yt0x19 -Wm-yn"$(PROJECTNAME)"
 LCCFLAGS_pocket  = -Wl-yt0x19 -Wm-yn"$(PROJECTNAME)"
 LCCFLAGS_sms     =
 LCCFLAGS_gg      =
+LCCFLAGS_nes     =
 
 LCCFLAGS += $(LCCFLAGS_$(EXT)) -Wl-yo4 -Wm-yS # This adds the current platform specific LCC Flags
 
 # LCCFLAGS += -autobank -Wb-ext=.rel -Wb-v # MBC + Autobanking related flags
 LCCFLAGS += -Wl-j
-# LCCFLAGS += -debug # Uncomment to enable debug output
-# LCCFLAGS += -v     # Uncomment for lcc verbose output
 
 CFLAGS = -Wf-Iinclude
+
+# GBDK_DEBUG = ON
+ifdef GBDK_DEBUG
+	LCCFLAGS += -debug -v
+	CFLAGS += -debug
+endif
 
 # You can set the name of the ROM file here
 PROJECTNAME = VWFDemo
