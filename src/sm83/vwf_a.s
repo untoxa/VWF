@@ -26,7 +26,7 @@ _vwf_memcpy::
         ldhl sp, #8
         ld  a, (hl-)
         ldh (__current_bank),a
-        ld  (#0x2000), a
+        ld  (#rROMB0), a
 
         ld a, (hl-)
         ld b, a
@@ -55,7 +55,7 @@ _vwf_memcpy::
 
         ld  a, (#__save)
         ldh (__current_bank),a
-        ld  (#0x2000), a
+        ld  (#rROMB0), a
         ret
 
 ; UBYTE vwf_read_banked_ubyte(const void * src, UBYTE bank) __preserves_regs(b, c); 
@@ -66,7 +66,7 @@ _vwf_read_banked_ubyte::
         ldhl  sp, #4
         ld  a, (hl-)
         ldh (__current_bank),a
-        ld  (#0x2000), a
+        ld  (#rROMB0), a
 
         ld  a, (hl-)
         ld  l, (hl)
@@ -75,7 +75,7 @@ _vwf_read_banked_ubyte::
 
         ld  a, (#__save)
         ldh (__current_bank),a
-        ld  (#0x2000), a
+        ld  (#rROMB0), a
         ret
 
 ; void vwf_set_banked_bkg_data(UBYTE i, UBYTE l, const unsigned char* ptr, UBYTE bank);
@@ -86,14 +86,14 @@ _vwf_set_banked_data::
         ldhl  sp, #6
         ld  a, (hl)
         ldh (__current_bank),a
-        ld  (#0x2000), a
+        ld  (#rROMB0), a
 
         pop bc
         call  _set_bkg_1bpp_data
 
         ld  a, (#__save)
         ldh (__current_bank),a
-        ld  (#0x2000), a
+        ld  (#rROMB0), a
         ld  h, b
         ld  l, c
         jp  (hl)
@@ -106,7 +106,7 @@ _vwf_print_shift_char::
         push af
         ld a, (hl-)
         ldh (__current_bank), a
-        ld  (#0x2000), a
+        ld  (#rROMB0), a
 
         ld a, (hl-)
         ld d, a
@@ -165,21 +165,21 @@ _vwf_print_shift_char::
 
         pop af
         ldh (__current_bank),a
-        ld  (#0x2000), a
+        ld  (#rROMB0), a
 
         ret
 
 ; UBYTE * vwf_get_win_addr() __preserves_regs(b, c, h, l);
 _vwf_get_win_addr::
         ldh     a,(.LCDC)
-        bit     6,a
+        bit     LCDCF_B_WIN9C00,a
         jr      Z,.is98
         jr      .is9c
 
 ; UBYTE * vwf_get_bkg_addr() __preserves_regs(b, c, h, l);
 _vwf_get_bkg_addr::
         ldh     a,(.LCDC)
-        bit     3,a
+        bit     LCDCF_B_BG9C00,a
         jr      NZ,.is9c
 .is98:
         ld      de,#0x9800      ; DE = origin
